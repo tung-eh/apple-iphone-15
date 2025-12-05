@@ -1,7 +1,9 @@
+import Navbar from './Navbar'
+
 function App() {
   return (
     <main>
-      <div>Navbar</div>
+      <Navbar />
       <div>Hero</div>
       <div>Highlights</div>
     </main>
