@@ -9,6 +9,20 @@
   --color-zinc: #101010;
 }
 
+@layer utilities {
+  .flex-center {
+    @apply flex items-center justify-center;
+  }
+
+  .nav-height {
+    @apply h-[calc(100vh-60px)];
+  }
+
+  .hero-title {
+    @apply text-center font-semibold text-3xl text-gray-100 opacity-0 max-md:mb-10;
+  }
+}
+
 body {
   color: white;
   width: 100dvw;
@@ -24,14 +38,4 @@ body {
   margin-inline-end: auto;
   position: relative;
   max-width: 1120px;
-}
-
-@layer utilities {
-  .flex-center {
-    @apply flex items-center justify-center;
-  }
-
-  .nav-height {
-    @apply h-[calc(100vh-60px)];
-  }
 }
