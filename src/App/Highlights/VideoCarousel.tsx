@@ -1,9 +1,15 @@
+import { useState } from 'react'
+import { useGSAP } from '@gsap/react'
+import gsap from 'gsap'
+
 import highlightFirstVideo from '/assets/videos/highlight-first.mp4'
 import highlightSecondVideo from '/assets/videos/hightlight-third.mp4'
 import highlightThirdVideo from '/assets/videos/hightlight-sec.mp4'
 import highlightFourthVideo from '/assets/videos/hightlight-fourth.mp4'
 
 import pauseImg from '/assets/images/pause.svg'
+import playImg from '/assets/images/play.svg'
+import replayImg from '/assets/images/replay.svg'
 
 const hightlightsSlides = [
   {
@@ -40,19 +46,53 @@ const hightlightsSlides = [
   },
 ]
 
+const slideCount = hightlightsSlides.length
+
 const VideoCarousel = () => {
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [currentProgress, setCurrentProgress] = useState(0)
+  const [isPlaying, setIsPlaying] = useState(true)
+
+  const isEnded = currentIndex === slideCount - 1 && currentProgress === 100
+
+  useGSAP(() => {
+    gsap.to('#slider', {
+      transform: `translateX(${-100 * currentIndex}%)`,
+      duration: 2,
+      ease: 'power2.inOut',
+      onComplete: () => {
+        const currentVideo = document.getElementById(
+          `video_${currentIndex}`
+        ) as HTMLVideoElement
+        currentVideo.play()
+      },
+    })
+  }, [currentIndex])
+
   return (
     <>
       <div className="flex items-center">
-        {hightlightsSlides.map((list) => (
+        {hightlightsSlides.map((list, index) => (
           <div key={list.id} id="slider" className="sm:pr-20 pr-10">
             <div className="video-carousel_container">
               <div className="w-full h-full flex-center rounded-3xl overflow-hidden bg-black">
-                <video id="video" playsInline={true} preload="auto" muted>
+                <video
+                  id={`video_${index}`}
+                  playsInline={true}
+                  preload="auto"
+                  muted
+                  autoPlay={index === currentIndex}
+                  onEnded={() => {
+                    if (currentIndex < slideCount - 1) {
+                      setCurrentIndex(currentIndex + 1)
+                    } else {
+                      setIsPlaying(false)
+                    }
+                  }}
+                >
                   <source src={list.video} type="video/mp4" />
                 </video>
               </div>
-
               <div className="absolute top-12 left-[5%] z-10">
                 {list.textLists.map((text, i) => (
                   <p key={i} className="md:text-2xl text-xl font-medium">
@@ -76,9 +116,14 @@ const VideoCarousel = () => {
             </span>
           ))}
         </div>
-
         <button className="control-btn">
-          <img src={pauseImg} alt={'pause'} />
+          {isEnded ? (
+            <img src={replayImg} alt={'replay'} />
+          ) : isPlaying ? (
+            <img src={pauseImg} alt={'pause'} />
+          ) : (
+            <img src={playImg} alt={'play'} />
+          )}
         </button>
       </div>
     </>
