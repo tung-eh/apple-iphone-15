@@ -1,12 +1,13 @@
 import Navbar from './Navbar'
 import Hero from './Hero'
+import Highlights from './Highlights'
 
 function App() {
   return (
     <main>
       <Navbar />
       <Hero />
-      <div>Highlights</div>
+      <Highlights />
     </main>
   )
 }
