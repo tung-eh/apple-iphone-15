@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 
@@ -49,6 +49,7 @@ const hightlightsSlides = [
 const slideCount = hightlightsSlides.length
 
 const VideoCarousel = () => {
+  const videoRef = useRef<HTMLVideoElement>(null)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [currentProgress, setCurrentProgress] = useState(0)
   const [isPlaying, setIsPlaying] = useState(true)
@@ -61,10 +62,7 @@ const VideoCarousel = () => {
       duration: 2,
       ease: 'power2.inOut',
       onComplete: () => {
-        const currentVideo = document.getElementById(
-          `video_${currentIndex}`
-        ) as HTMLVideoElement
-        currentVideo.play()
+        videoRef.current?.play()
       },
     })
   }, [currentIndex])
@@ -76,22 +74,29 @@ const VideoCarousel = () => {
           <div key={list.id} id="slider" className="sm:pr-20 pr-10">
             <div className="video-carousel_container">
               <div className="w-full h-full flex-center rounded-3xl overflow-hidden bg-black">
-                <video
-                  id={`video_${index}`}
-                  playsInline={true}
-                  preload="auto"
-                  muted
-                  autoPlay={index === currentIndex}
-                  onEnded={() => {
-                    if (currentIndex < slideCount - 1) {
-                      setCurrentIndex(currentIndex + 1)
-                    } else {
-                      setIsPlaying(false)
-                    }
-                  }}
-                >
-                  <source src={list.video} type="video/mp4" />
-                </video>
+                {index === currentIndex ? (
+                  <video
+                    ref={videoRef}
+                    playsInline={true}
+                    preload="auto"
+                    muted
+                    autoPlay
+                    onTimeUpdate={() => {}}
+                    onEnded={() => {
+                      if (currentIndex < slideCount - 1) {
+                        setCurrentIndex(currentIndex + 1)
+                      } else {
+                        setIsPlaying(false)
+                      }
+                    }}
+                  >
+                    <source src={list.video} type="video/mp4" />
+                  </video>
+                ) : (
+                  <video playsInline={true} preload="auto" muted>
+                    <source src={list.video} type="video/mp4" />
+                  </video>
+                )}
               </div>
               <div className="absolute top-12 left-[5%] z-10">
                 {list.textLists.map((text, i) => (
