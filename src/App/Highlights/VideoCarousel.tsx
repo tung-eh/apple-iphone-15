@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import { useMediaQuery } from 'react-responsive'
@@ -51,38 +51,68 @@ const slideCount = hightlightsSlides.length
 
 const VideoCarousel = () => {
   const videoRef = useRef<HTMLVideoElement>(null)
-  const progressRef = useRef<HTMLSpanElement>(null)
-  const progressInnerRef = useRef<HTMLSpanElement>(null)
 
   const isMobile = useMediaQuery({ maxWidth: 767 })
   const isTablet = useMediaQuery({ maxWidth: 1279 })
 
   const [currentIndex, setCurrentIndex] = useState(0)
-  const [currentProgress, setCurrentProgress] = useState(0)
   const [isPlaying, setIsPlaying] = useState(true)
 
-  const isEnded = currentIndex === slideCount - 1 && currentProgress === 100
+  const isEnded = currentIndex === slideCount
 
   useGSAP(() => {
-    gsap.to('#slider', {
-      transform: `translateX(${-100 * currentIndex}%)`,
-      duration: 2,
-      ease: 'power2.inOut',
-      onComplete: () => {
-        videoRef.current?.play()
-      },
+    if (currentIndex < slideCount) {
+      gsap.to('#slider', {
+        transform: `translateX(${-100 * currentIndex}%)`,
+        duration: 2,
+        ease: 'power2.inOut',
+      })
+
+      gsap.to(videoRef.current, {
+        scrollTrigger: {
+          trigger: videoRef.current,
+          toggleActions: 'restart none none none',
+        },
+        onComplete: () => {
+          videoRef.current?.play()
+        },
+      })
+    }
+
+    if (currentIndex > 0) {
+      gsap.to(document.getElementById(`progress_${currentIndex - 1}`), {
+        width: '12px',
+      })
+      gsap.to(document.getElementById(`progress_${currentIndex - 1}_inner`), {
+        width: '100%',
+        backgroundColor: '#afafaf',
+      })
+    }
+
+    gsap.to(document.getElementById(`progress_${currentIndex}`), {
+      width: isMobile ? '10vw' : isTablet ? '10vw' : '4vw',
+    })
+    gsap.to(document.getElementById(`progress_${currentIndex}_inner`), {
+      width: 0,
+      backgroundColor: 'white',
     })
   }, [currentIndex])
 
-  useGSAP(() => {
-    gsap.to(progressRef.current, {
-      width: isMobile ? '10vw' : isTablet ? '10vw' : '4vw',
-    })
-    gsap.to(progressInnerRef.current, {
-      width: `${currentProgress}%`,
-      backgroundColor: 'white',
-    })
-  }, [currentProgress])
+  useEffect(() => {
+    const animateProgressBar = () => {
+      const video = videoRef.current
+      const bar = document.getElementById(`progress_${currentIndex}_inner`)
+
+      if (!video) return
+
+      const progress = (video.currentTime / video.duration) * 100
+      gsap.set(bar, { width: progress + '%' })
+    }
+
+    gsap.ticker.add(animateProgressBar)
+
+    return () => gsap.ticker.remove(animateProgressBar)
+  }, [currentIndex])
 
   return (
     <>
@@ -97,27 +127,8 @@ const VideoCarousel = () => {
                     playsInline={true}
                     preload="auto"
                     muted
-                    autoPlay
-                    onTimeUpdate={() => {
-                      setCurrentProgress(
-                        ((videoRef.current?.currentTime ?? 0) /
-                          (videoRef.current?.duration ?? 1)) *
-                          100
-                      )
-                    }}
                     onEnded={() => {
-                      gsap.to(progressRef.current, {
-                        clearProps: 'width',
-                      })
-                      gsap.to(progressInnerRef.current, {
-                        clearProps: 'width,backgroundColor',
-                      })
-                      if (currentIndex < slideCount - 1) {
-                        setCurrentIndex(currentIndex + 1)
-                        setCurrentProgress(0)
-                      } else {
-                        setIsPlaying(false)
-                      }
+                      setCurrentIndex(currentIndex + 1)
                     }}
                   >
                     <source src={list.video} type="video/mp4" />
@@ -145,11 +156,11 @@ const VideoCarousel = () => {
           {hightlightsSlides.map((_, index) => (
             <span
               key={index}
-              ref={index === currentIndex ? progressRef : null}
+              id={`progress_${index}`}
               className="mx-2 w-3 h-3 bg-gray-200 rounded-full relative cursor-pointer"
             >
               <span
-                ref={index === currentIndex ? progressInnerRef : null}
+                id={`progress_${index}_inner`}
                 className="absolute h-full w-full rounded-full"
               />
             </span>
