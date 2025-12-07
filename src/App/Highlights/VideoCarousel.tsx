@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
+import { useMediaQuery } from 'react-responsive'
 
 import highlightFirstVideo from '/assets/videos/highlight-first.mp4'
 import highlightSecondVideo from '/assets/videos/hightlight-third.mp4'
@@ -50,6 +51,12 @@ const slideCount = hightlightsSlides.length
 
 const VideoCarousel = () => {
   const videoRef = useRef<HTMLVideoElement>(null)
+  const progressRef = useRef<HTMLSpanElement>(null)
+  const progressInnerRef = useRef<HTMLSpanElement>(null)
+
+  const isMobile = useMediaQuery({ maxWidth: 767 })
+  const isTablet = useMediaQuery({ maxWidth: 1279 })
+
   const [currentIndex, setCurrentIndex] = useState(0)
   const [currentProgress, setCurrentProgress] = useState(0)
   const [isPlaying, setIsPlaying] = useState(true)
@@ -67,6 +74,16 @@ const VideoCarousel = () => {
     })
   }, [currentIndex])
 
+  useGSAP(() => {
+    gsap.to(progressRef.current, {
+      width: isMobile ? '10vw' : isTablet ? '10vw' : '4vw',
+    })
+    gsap.to(progressInnerRef.current, {
+      width: `${currentProgress}%`,
+      backgroundColor: 'white',
+    })
+  }, [currentProgress])
+
   return (
     <>
       <div className="flex items-center">
@@ -81,10 +98,23 @@ const VideoCarousel = () => {
                     preload="auto"
                     muted
                     autoPlay
-                    onTimeUpdate={() => {}}
+                    onTimeUpdate={() => {
+                      setCurrentProgress(
+                        ((videoRef.current?.currentTime ?? 0) /
+                          (videoRef.current?.duration ?? 1)) *
+                          100
+                      )
+                    }}
                     onEnded={() => {
+                      gsap.to(progressRef.current, {
+                        clearProps: 'width',
+                      })
+                      gsap.to(progressInnerRef.current, {
+                        clearProps: 'width,backgroundColor',
+                      })
                       if (currentIndex < slideCount - 1) {
                         setCurrentIndex(currentIndex + 1)
+                        setCurrentProgress(0)
                       } else {
                         setIsPlaying(false)
                       }
@@ -112,12 +142,16 @@ const VideoCarousel = () => {
 
       <div className="relative flex-center mt-10">
         <div className="flex-center py-5 px-7 bg-gray-300 backdrop-blur rounded-full">
-          {hightlightsSlides.map((_, i) => (
+          {hightlightsSlides.map((_, index) => (
             <span
-              key={i}
+              key={index}
+              ref={index === currentIndex ? progressRef : null}
               className="mx-2 w-3 h-3 bg-gray-200 rounded-full relative cursor-pointer"
             >
-              <span className="absolute h-full w-full rounded-full" />
+              <span
+                ref={index === currentIndex ? progressInnerRef : null}
+                className="absolute h-full w-full rounded-full"
+              />
             </span>
           ))}
         </div>
