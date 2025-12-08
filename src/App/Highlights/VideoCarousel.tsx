@@ -12,6 +12,8 @@ import pauseImg from '/assets/images/pause.svg'
 import playImg from '/assets/images/play.svg'
 import replayImg from '/assets/images/replay.svg'
 
+import { useUpdateEffect } from 'src/hooks'
+
 const hightlightsSlides = [
   {
     id: 1,
@@ -114,6 +116,14 @@ const VideoCarousel = () => {
     return () => gsap.ticker.remove(animateProgressBar)
   }, [currentIndex])
 
+  useUpdateEffect(() => {
+    if (isPlaying) {
+      videoRef.current?.play()
+    } else {
+      videoRef.current?.pause()
+    }
+  }, [isPlaying])
+
   return (
     <>
       <div className="flex items-center">
@@ -166,15 +176,19 @@ const VideoCarousel = () => {
             </span>
           ))}
         </div>
-        <button className="control-btn">
-          {isEnded ? (
+        {isEnded ? (
+          <button className="control-btn" onClick={() => setCurrentIndex(0)}>
             <img src={replayImg} alt={'replay'} />
-          ) : isPlaying ? (
+          </button>
+        ) : isPlaying ? (
+          <button className="control-btn" onClick={() => setIsPlaying(false)}>
             <img src={pauseImg} alt={'pause'} />
-          ) : (
+          </button>
+        ) : (
+          <button className="control-btn" onClick={() => setIsPlaying(true)}>
             <img src={playImg} alt={'play'} />
-          )}
-        </button>
+          </button>
+        )}
       </div>
     </>
   )
