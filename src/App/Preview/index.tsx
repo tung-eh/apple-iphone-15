@@ -1,14 +1,16 @@
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import { Canvas } from '@react-three/fiber'
-import { View } from '@react-three/drei'
+import { Environment } from '@react-three/drei'
 import { twMerge } from 'tailwind-merge'
 
 import yellowImg from '/assets/images/yellow.jpg'
 import blueImg from '/assets/images/blue.jpg'
 import whiteImg from '/assets/images/white.jpg'
 import blackImg from '/assets/images/black.jpg'
+
+import Iphone from './Iphone'
 
 const models = [
   {
@@ -42,7 +44,7 @@ const sizes = [
   { label: '6.7"', value: 'large' },
 ]
 
-const Model = () => {
+const Preview = () => {
   useGSAP(() => {
     gsap.to('#heading', { y: 0, opacity: 1 })
   }, [])
@@ -60,7 +62,24 @@ const Model = () => {
         </h1>
         <div className="flex flex-col items-center mt-5">
           <div className="w-full h-[75vh] md:h-[90vh] overflow-hidden relative">
-            <div className="w-full h-full" />
+            <Canvas className="h-full w-full">
+              <Suspense fallback={null}>
+                <Iphone scale={[17, 17, 17]} />
+                <ambientLight intensity={Math.PI / 2} />
+                <spotLight
+                  position={[10, 10, 10]}
+                  angle={0.15}
+                  penumbra={1}
+                  decay={0}
+                  intensity={Math.PI}
+                />
+                <pointLight
+                  position={[-10, -10, -10]}
+                  decay={0}
+                  intensity={Math.PI}
+                />
+              </Suspense>
+            </Canvas>
           </div>
 
           <div className="mx-auto w-full">
@@ -104,4 +123,4 @@ const Model = () => {
   )
 }
 
-export default Model
+export default Preview
