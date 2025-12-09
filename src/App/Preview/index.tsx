@@ -44,12 +44,8 @@ const Preview = () => {
         </h1>
         <div className="flex flex-col items-center mt-5">
           <div className="w-full h-[75vh] md:h-[90vh] overflow-hidden relative">
-            <ModelView model={models[0]} size="small" />
-            <ModelView
-              model={models[1]}
-              size="large"
-              className="right-[-100%]"
-            />
+            <ModelView size="small" model={model} />
+            <ModelView size="large" model={model} className="right-[-100%]" />
             <Canvas
               className="w-full h-full"
               style={{
