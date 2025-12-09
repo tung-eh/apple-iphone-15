@@ -2,7 +2,8 @@ import { useState, Suspense } from 'react'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import { Canvas } from '@react-three/fiber'
-import { Environment } from '@react-three/drei'
+import { OrbitControls } from '@react-three/drei'
+import * as THREE from 'three'
 import { twMerge } from 'tailwind-merge'
 
 import yellowImg from '/assets/images/yellow.jpg'
@@ -64,6 +65,13 @@ const Preview = () => {
           <div className="w-full h-[75vh] md:h-[90vh] overflow-hidden relative">
             <Canvas className="h-full w-full">
               <Suspense fallback={null}>
+                <OrbitControls
+                  makeDefault
+                  enableZoom={false}
+                  enablePan={false}
+                  rotateSpeed={0.4}
+                  target={new THREE.Vector3(0, 0, 0)}
+                />
                 <Iphone scale={[17, 17, 17]} />
                 <ambientLight intensity={Math.PI / 2} />
                 <spotLight
