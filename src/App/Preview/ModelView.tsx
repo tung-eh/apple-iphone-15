@@ -18,7 +18,7 @@ const ModelView = ({
   className?: string
 }) => {
   return (
-    <View className={twMerge('w-full h-full absolute', className)}>
+    <View className={twMerge('model-view w-full h-full absolute', className)}>
       {/* Ambient Light */}
       <ambientLight intensity={0.3} />
 

@@ -5,6 +5,8 @@ import { Canvas } from '@react-three/fiber'
 import { View } from '@react-three/drei'
 import { twMerge } from 'tailwind-merge'
 
+import { useUpdateEffect } from 'src/hooks'
+
 import ModelView from './ModelView'
 import { models, sizes, type Size } from './constants'
 
@@ -18,6 +20,22 @@ const Preview = () => {
 
   const [size, setSize] = useState<Size['value']>('small')
 
+  useUpdateEffect(() => {
+    if (size === 'large') {
+      gsap.to('.model-view', {
+        transform: 'translateX(-100%)',
+        duration: 2,
+        ease: 'power2.inOut',
+      })
+    } else {
+      gsap.to('.model-view', {
+        transform: 'translateX(0)',
+        duration: 2,
+        ease: 'power2.inOut',
+      })
+    }
+  }, [size])
+
   return (
     <section className="common-padding">
       <div className="screen-max-width">
@@ -26,10 +44,10 @@ const Preview = () => {
         </h1>
         <div className="flex flex-col items-center mt-5">
           <div className="w-full h-[75vh] md:h-[90vh] overflow-hidden relative">
-            <ModelView model={models[0]} size={size} />
+            <ModelView model={models[0]} size="small" />
             <ModelView
               model={models[1]}
-              size={size}
+              size="large"
               className="right-[-100%]"
             />
             <Canvas
