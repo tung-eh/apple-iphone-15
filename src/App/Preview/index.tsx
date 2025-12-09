@@ -1,13 +1,11 @@
-import { useState, Suspense } from 'react'
+import { useState } from 'react'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls } from '@react-three/drei'
-import * as THREE from 'three'
+import { View } from '@react-three/drei'
 import { twMerge } from 'tailwind-merge'
 
-import Iphone from './Iphone'
-import Placeholder from './Placeholder'
+import ModelView from './ModelView'
 import { models, sizes, type Size } from './constants'
 
 const Preview = () => {
@@ -28,30 +26,25 @@ const Preview = () => {
         </h1>
         <div className="flex flex-col items-center mt-5">
           <div className="w-full h-[75vh] md:h-[90vh] overflow-hidden relative">
-            <Canvas className="h-full w-full">
-              <OrbitControls
-                makeDefault
-                enableZoom={false}
-                enablePan={false}
-                rotateSpeed={0.4}
-                target={new THREE.Vector3(0, 0, 0)}
-              />
-              <Suspense fallback={<Placeholder scale={[1, 2.7, 0.25]} />}>
-                <Iphone scale={[17, 17, 17]} style={model} />
-              </Suspense>
-              <ambientLight intensity={Math.PI / 2} />
-              <spotLight
-                position={[10, 10, 10]}
-                angle={0.15}
-                penumbra={1}
-                decay={0}
-                intensity={Math.PI}
-              />
-              <pointLight
-                position={[-10, -10, -10]}
-                decay={0}
-                intensity={Math.PI}
-              />
+            <ModelView model={models[0]} size={size} />
+            <ModelView
+              model={models[1]}
+              size={size}
+              className="right-[-100%]"
+            />
+            <Canvas
+              className="w-full h-full"
+              style={{
+                position: 'fixed',
+                top: 0,
+                bottom: 0,
+                left: 0,
+                right: 0,
+                overflow: 'hidden',
+              }}
+              eventSource={document.getElementById('root')!}
+            >
+              <View.Port />
             </Canvas>
           </div>
 

@@ -33,8 +33,8 @@ export const models = [
 export type Model = (typeof models)[number]
 
 export const sizes = [
-  { label: '6.1"', value: 'small' },
-  { label: '6.7"', value: 'large' },
+  { label: '6.1"', value: 'small' as const },
+  { label: '6.7"', value: 'large' as const },
 ]
 
 export type Size = (typeof sizes)[number]
