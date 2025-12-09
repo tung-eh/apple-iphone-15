@@ -12,7 +12,15 @@ import { models, sizes, type Size } from './constants'
 
 const Preview = () => {
   useGSAP(() => {
-    gsap.to('#heading', { y: 0, opacity: 1 })
+    gsap.to('#heading', {
+      y: 0,
+      opacity: 1,
+      scrollTrigger: {
+        trigger: '#heading',
+        toggleActions: 'restart reverse restart reverse',
+        start: 'top 85%',
+      },
+    })
   }, [])
 
   const [modelIndex, setModelIndex] = useState(0)

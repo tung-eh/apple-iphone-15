@@ -7,9 +7,25 @@ import rightImg from '/assets/images/right.svg'
 import VideoCarousel from './VideoCarousel'
 
 const Highlights = () => {
+  const scrollTrigger = {
+    trigger: '#highlights',
+    toggleActions: 'restart reverse restart reverse',
+    start: 'top 85%',
+  }
+
   useGSAP(() => {
-    gsap.to('#title', { opacity: 1, y: 0 })
-    gsap.to('.link', { opacity: 1, y: 0, duration: 1, stagger: 0.25 })
+    gsap.to('#title', {
+      opacity: 1,
+      y: 0,
+      scrollTrigger,
+    })
+    gsap.to('.link', {
+      opacity: 1,
+      y: 0,
+      duration: 1,
+      stagger: 0.25,
+      scrollTrigger,
+    })
   })
 
   return (
