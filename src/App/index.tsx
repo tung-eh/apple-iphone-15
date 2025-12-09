@@ -5,6 +5,7 @@ import Navbar from './Navbar'
 import Hero from './Hero'
 import Highlights from './Highlights'
 import Preview from './Preview'
+import Features from './Features'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -15,6 +16,7 @@ function App() {
       <Hero />
       <Highlights />
       <Preview />
+      <Features />
     </main>
   )
 }
