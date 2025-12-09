@@ -20,6 +20,12 @@ const Features = () => {
         ...scrollProps,
       },
     })
+    gsap.to('.g_grow', {
+      scale: 1,
+      opacity: 1,
+      ease: 'power1',
+      scrollTrigger: { trigger: '.g_grow', ...scrollProps, scrub: 5.5 },
+    })
   })
 
   return (
