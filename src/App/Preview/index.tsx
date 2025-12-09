@@ -7,6 +7,7 @@ import * as THREE from 'three'
 import { twMerge } from 'tailwind-merge'
 
 import Iphone from './Iphone'
+import Placeholder from './Placeholder'
 import { models, sizes, type Size } from './constants'
 
 const Preview = () => {
@@ -28,29 +29,29 @@ const Preview = () => {
         <div className="flex flex-col items-center mt-5">
           <div className="w-full h-[75vh] md:h-[90vh] overflow-hidden relative">
             <Canvas className="h-full w-full">
-              <Suspense fallback={null}>
-                <OrbitControls
-                  makeDefault
-                  enableZoom={false}
-                  enablePan={false}
-                  rotateSpeed={0.4}
-                  target={new THREE.Vector3(0, 0, 0)}
-                />
+              <OrbitControls
+                makeDefault
+                enableZoom={false}
+                enablePan={false}
+                rotateSpeed={0.4}
+                target={new THREE.Vector3(0, 0, 0)}
+              />
+              <Suspense fallback={<Placeholder scale={[1, 2.7, 0.25]} />}>
                 <Iphone scale={[17, 17, 17]} style={model} />
-                <ambientLight intensity={Math.PI / 2} />
-                <spotLight
-                  position={[10, 10, 10]}
-                  angle={0.15}
-                  penumbra={1}
-                  decay={0}
-                  intensity={Math.PI}
-                />
-                <pointLight
-                  position={[-10, -10, -10]}
-                  decay={0}
-                  intensity={Math.PI}
-                />
               </Suspense>
+              <ambientLight intensity={Math.PI / 2} />
+              <spotLight
+                position={[10, 10, 10]}
+                angle={0.15}
+                penumbra={1}
+                decay={0}
+                intensity={Math.PI}
+              />
+              <pointLight
+                position={[-10, -10, -10]}
+                decay={0}
+                intensity={Math.PI}
+              />
             </Canvas>
           </div>
 
