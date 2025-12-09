@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 
@@ -6,12 +7,25 @@ import explore1Img from '/assets/images/explore1.jpg'
 import explore2Img from '/assets/images/explore2.jpg'
 
 const Features = () => {
+  const videoRef = useRef<HTMLVideoElement>(null)
+
   const scrollProps = {
     toggleActions: 'restart reverse restart reverse',
     start: 'top 85%',
   }
 
   useGSAP(() => {
+    gsap.to('#exploreVideo', {
+      scrollTrigger: {
+        trigger: '#exploreVideo',
+        toggleActions: 'play pause reverse restart',
+        start: '-10% bottom',
+      },
+      onComplete: () => {
+        videoRef.current?.play()
+      },
+    })
+
     gsap.to('#features_title', {
       y: 0,
       opacity: 1,
@@ -53,6 +67,7 @@ const Features = () => {
           <div className="flex-center flex-col sm:px-10">
             <div className="relative h-[50vh] w-full flex items-center">
               <video
+                ref={videoRef}
                 playsInline
                 id="exploreVideo"
                 className="w-full h-full object-cover object-center"
