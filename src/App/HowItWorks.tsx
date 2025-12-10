@@ -32,7 +32,6 @@ const HowItWorks = () => {
       ease: 'power2.inOut',
     })
 
-    // I don't know why it's not working
     gsap.to('.g_fadeIn', {
       y: 0,
       opacity: 1,
