@@ -1,4 +1,6 @@
 import { useRef } from 'react'
+import { useGSAP } from '@gsap/react'
+import gsap from 'gsap'
 
 import chipImg from '/assets/images/chip.jpeg'
 import frameImg from '/assets/images/frame.png'
@@ -6,6 +8,19 @@ import frameVideo from '/assets/videos/frame.mp4'
 
 const HowItWorks = () => {
   const videoRef = useRef<HTMLVideoElement>(null)
+
+  useGSAP(() => {
+    gsap.from('#chip', {
+      scrollTrigger: {
+        trigger: '#chip',
+        start: '20% bottom',
+      },
+      opacity: 0,
+      scale: 2,
+      duration: 2,
+      ease: 'power2.inOut',
+    })
+  }, [])
 
   return (
     <section className="common-padding">
