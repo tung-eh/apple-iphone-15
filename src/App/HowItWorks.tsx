@@ -10,6 +10,17 @@ const HowItWorks = () => {
   const videoRef = useRef<HTMLVideoElement>(null)
 
   useGSAP(() => {
+    gsap.to(videoRef.current, {
+      scrollTrigger: {
+        trigger: videoRef.current,
+        toggleActions: 'play pause reverse restart',
+        start: '-10% bottom',
+      },
+      onComplete: () => {
+        videoRef.current?.play()
+      },
+    })
+
     gsap.from('#chip', {
       scrollTrigger: {
         trigger: '#chip',
@@ -20,7 +31,20 @@ const HowItWorks = () => {
       duration: 2,
       ease: 'power2.inOut',
     })
-  }, [])
+
+    // I don't know why it's not working
+    gsap.to('.g_fadeIn', {
+      y: 0,
+      opacity: 1,
+      ease: 'power2.inOut',
+      duration: 1,
+      scrollTrigger: {
+        trigger: '.g_fadeIn',
+        toggleActions: 'restart reverse restart reverse',
+        start: 'top 85%',
+      },
+    })
+  })
 
   return (
     <section className="common-padding">

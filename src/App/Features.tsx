@@ -15,9 +15,9 @@ const Features = () => {
   }
 
   useGSAP(() => {
-    gsap.to('#exploreVideo', {
+    gsap.to(videoRef.current, {
       scrollTrigger: {
-        trigger: '#exploreVideo',
+        trigger: videoRef.current,
         toggleActions: 'play pause reverse restart',
         start: '-10% bottom',
       },
@@ -69,7 +69,6 @@ const Features = () => {
               <video
                 ref={videoRef}
                 playsInline
-                id="exploreVideo"
                 className="w-full h-full object-cover object-center"
                 preload="none"
                 muted
